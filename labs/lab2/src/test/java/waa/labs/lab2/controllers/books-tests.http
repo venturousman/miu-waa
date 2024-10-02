@@ -32,3 +32,31 @@ DELETE http://localhost:8080/books/5
 
 ###
 DELETE http://localhost:8080/books/3
+
+### Media type versioning
+GET http://localhost:8080/books/search?title=Java
+Accept: application/v1+json
+
+###
+GET http://localhost:8080/books/search?price=40
+Accept: application/v2+json
+
+### Header versioning
+GET http://localhost:8080/books/search1?title=UML
+X-API-VERSION: 1
+
+###
+GET http://localhost:8080/books/search1?price=40
+X-API-VERSION: 2
+
+### URL versioning
+GET http://localhost:8080/books/v1/search2?title=8
+
+###
+GET http://localhost:8080/books/v2/search2?price=33
+
+### Parameter versioning
+GET http://localhost:8080/books/list?version=1
+
+###
+GET http://localhost:8080/books/list?version=2
