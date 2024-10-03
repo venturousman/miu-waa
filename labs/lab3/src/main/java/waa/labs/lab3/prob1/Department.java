@@ -1,4 +1,4 @@
-package waa.labs.lab3.onetomany;
+package waa.labs.lab3.prob1;
 
 import jakarta.persistence.*;
 
