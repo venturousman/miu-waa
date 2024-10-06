@@ -18,5 +18,9 @@ public class Employee {
     // ManyToOne, default is JoinColumn, can use JoinTable, dont have mappedBy
     // Many Employees belong to One Department
     @ManyToOne
+    // JoinTable is optional, still work
+//    @JoinTable(name = "emps_dept",
+//            joinColumns = @JoinColumn(name = "emp_id"),
+//            inverseJoinColumns = @JoinColumn(name = "dept_id"))
     private Department department;
 }
