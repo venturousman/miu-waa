@@ -77,15 +77,15 @@ const App = () => {
 
     useEffect(() => {
         console.log('inside useEffect to fetch comments');
-        // Side effect: fetching data from an API
-        fetch('http://localhost:3004/posts')
-            .then((response) => response.json())
-            .then((data) => {
-                if (data && Array.isArray(data)) {
-                    data.forEach((x: any) => x.ctime = dayjs(x.ctime)); // for newest sorting, TODO refactor if use it further
-                    setComments(data);
-                }
-            });
+        async function getComments() {
+            const res = await fetch('http://localhost:3004/posts');
+            const data = await res.json();
+            if (data && Array.isArray(data)) {
+                data.forEach((x: any) => x.ctime = dayjs(x.ctime)); // for newest sorting, TODO refactor if use it further
+                setComments(data);
+            }
+        }
+        getComments();
     }, []); // Empty array means the effect runs once when the component mounts
 
     useEffect(() => {
