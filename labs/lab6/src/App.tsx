@@ -1,4 +1,4 @@
-import {ChangeEvent, useRef, useState} from 'react';
+import {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {cloneDeep, orderBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import dayjs from 'dayjs';
@@ -66,10 +66,42 @@ const tabs = [
 ]
 
 const App = () => {
-    const [comments, setComments] = useState(defaultList);
+    const [comments, setComments] = useState<any[]>([]);
+    const [currentUser, setCurrentUser] = useState(null);
     const [activeType, setActiveType] = useState('');
     const [textAreaValue, setTextAreaValue] = useState('');
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    // console.log(defaultList);
+    // console.log(JSON.stringify(defaultList));
+
+    useEffect(() => {
+        console.log('inside useEffect to fetch comments');
+        async function getComments() {
+            const res = await fetch('http://localhost:3004/posts');
+            const data = await res.json();
+            if (data && Array.isArray(data)) {
+                data.forEach((x: any) => x.ctime = dayjs(x.ctime)); // for newest sorting, TODO refactor if use it further
+                setComments(data);
+            }
+        }
+        getComments();
+    }, []); // Empty array means the effect runs once when the component mounts
+
+    useEffect(() => {
+        console.log('inside useEffect to fetch users');
+        // Side effect: fetching data from an API
+        fetch('http://localhost:3004/users')
+            .then((response) => response.json())
+            .then((data) => {
+                if (data && Array.isArray(data) && data.length > 0) {
+                    setCurrentUser(data[0]);
+                }
+            });
+    }, []); // Empty array means the effect runs once when the component mounts
+
+    // console.log(currentUser);
+    // console.log(comments);
 
     const sort = (mComments: any, sortType: string) => {
         // if (!sortType) return comments;
@@ -124,7 +156,7 @@ const App = () => {
         // console.log(now);
         const newComment = {
             rpid: uuidv4(),
-            user,
+            user: currentUser,
             content: textAreaValue,
             ctime: now,
             like: 0,
@@ -202,20 +234,20 @@ const App = () => {
                     */}
                     {/*
                     <StatefulCommentBox
-                        currentUser={user}
+                        currentUser={currentUser}
                         onPost={handleOnPost2}/>
                     */}
                     <StatelessCommentBox
                         onChange={handleOnChange}
                         value={textAreaValue}
-                        currentUser={user}
+                        currentUser={currentUser}
                         onPost={handleOnPost2}/>
                 </div>
                 {/* comment list */}
                 <div className="reply-list">
                     {/* comment item */}
                     {/*<CommentItem />*/}
-                    {comments.map(c => <CommentItem key={c.rpid} item={c} currentUser={user}
+                    {comments.map(c => <CommentItem key={c.rpid} item={c} currentUser={currentUser}
                                                     onLike={handleOnLike}
                                                     onDelete={handleOnDelete}/>)}
                 </div>
