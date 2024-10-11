@@ -6,6 +6,8 @@ import dayjs from 'dayjs';
 import './App.scss'
 import avatar from './images/bozai.png'
 import CommentItem from "./components/CommentItem";
+import StatefulCommentBox from "./components/StatefulCommentBox";
+import StatelessCommentBox from "./components/StatelessCommentBox";
 
 // current logged in user info
 const user = {
@@ -138,6 +140,17 @@ const App = () => {
         textAreaRef.current?.focus();
     }
 
+    const handleOnPost2 = (newComment: any) => {
+        let newComments = cloneDeep(comments);
+        newComments.push(newComment);
+        if (activeType) {
+            newComments = sort(newComments, activeType);
+        }
+        setComments(newComments);
+        // reset form
+        setTextAreaValue('');
+    }
+
     return (
         <div className="app">
             {/* Nav Tab */}
@@ -173,8 +186,8 @@ const App = () => {
                             <img className="bili-avatar-img" src={avatar} alt="Profile"/>
                         </div>
                     </div>
+                    {/*
                     <div className="reply-box-wrap">
-                        {/* comment */}
                         <textarea
                             className="reply-box-textarea"
                             placeholder="tell something..."
@@ -182,11 +195,21 @@ const App = () => {
                             value={textAreaValue}
                             ref={textAreaRef}
                         />
-                        {/* post button */}
                         <div className="reply-box-send">
                             <div className="send-text" onClick={handleOnPost}>Post</div>
                         </div>
                     </div>
+                    */}
+                    {/*
+                    <StatefulCommentBox
+                        currentUser={user}
+                        onPost={handleOnPost2}/>
+                    */}
+                    <StatelessCommentBox
+                        onChange={handleOnChange}
+                        value={textAreaValue}
+                        currentUser={user}
+                        onPost={handleOnPost2}/>
                 </div>
                 {/* comment list */}
                 <div className="reply-list">
