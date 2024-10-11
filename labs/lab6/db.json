@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "uid": "0891cc76-e6e8-49f1-b566-05b0811b8b69",
+      "avatar": "/images/bozai.png",
+      "uname": "John"
+    }
+  ],
+  "posts": [
+    {
+      "rpid": "772af36e-fc4c-4649-a4bd-50cd42c4be5e",
+      "user": {
+        "uid": "7b7b5ea4-38c6-448b-9f65-699cc713f34f",
+        "avatar": "",
+        "uname": "Jay Zhou"
+      },
+      "content": "Nice, well done",
+      "ctime": "2024-08-18T13:15:00.000Z",
+      "like": 88
+    },
+    {
+      "rpid": "ef908742-4bb2-463a-a0ea-62ea60a65585",
+      "user": {
+        "uid": "1651d967-ade6-4ae4-aa25-7713ca0a0431",
+        "avatar": "",
+        "uname": "Song Xu"
+      },
+      "content": "I search for you thousands of times, from dawn till dusk.",
+      "ctime": "2024-09-13T16:29:00.000Z",
+      "like": 88
+    },
+    {
+      "rpid": "58e5a671-cd02-49ce-8290-bb2b4c576199",
+      "user": {
+        "uid": "0891cc76-e6e8-49f1-b566-05b0811b8b69",
+        "avatar": "/images/bozai.png",
+        "uname": "John"
+      },
+      "content": "I told my computer I needed a break... now it will not stop sending me vacation ads.",
+      "ctime": "2024-08-19T14:00:05.000Z",
+      "like": 66
+    }
+  ]
+}
