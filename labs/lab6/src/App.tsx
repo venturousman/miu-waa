@@ -1,4 +1,4 @@
-import {ChangeEvent, useState} from 'react';
+import {ChangeEvent, useRef, useState} from 'react';
 import {cloneDeep, orderBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import dayjs from 'dayjs';
@@ -67,6 +67,7 @@ const App = () => {
     const [comments, setComments] = useState(defaultList);
     const [activeType, setActiveType] = useState('');
     const [textAreaValue, setTextAreaValue] = useState('');
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     const sort = (mComments: any, sortType: string) => {
         // if (!sortType) return comments;
@@ -134,6 +135,7 @@ const App = () => {
         setComments(newComments);
         // reset form
         setTextAreaValue('');
+        textAreaRef.current?.focus();
     }
 
     return (
@@ -178,6 +180,7 @@ const App = () => {
                             placeholder="tell something..."
                             onChange={handleOnChange}
                             value={textAreaValue}
+                            ref={textAreaRef}
                         />
                         {/* post button */}
                         <div className="reply-box-send">
