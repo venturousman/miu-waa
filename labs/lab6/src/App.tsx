@@ -1,6 +1,7 @@
-import {useState} from 'react';
+import {ChangeEvent, useState} from 'react';
 import {cloneDeep, orderBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
+import dayjs from 'dayjs';
 
 import './App.scss'
 import avatar from './images/bozai.png'
@@ -30,7 +31,8 @@ const defaultList = [
         // comment content
         content: 'Nice, well done',
         // created datetime
-        ctime: '10-18 08:15',
+        // ctime: '10-18 08:15',
+        ctime: dayjs('2024-08-18 08:15:00'),
         like: 88,
     },
     {
@@ -41,14 +43,16 @@ const defaultList = [
             uname: 'Song Xu',
         },
         content: 'I search for you thousands of times, from dawn till dusk.',
-        ctime: '11-13 11:29',
+        // ctime: '11-13 11:29',
+        ctime: dayjs('2024-09-13 11:29:00'),
         like: 88,
     },
     {
         rpid: uuidv4(),
         user,
         content: 'I told my computer I needed a break... now it will not stop sending me vacation ads.',
-        ctime: '10-19 09:00',
+        // ctime: '10-19 09:00',
+        ctime: dayjs('2024-08-19 09:00:05'),
         like: 66,
     },
 ]
@@ -62,27 +66,66 @@ const tabs = [
 const App = () => {
     const [comments, setComments] = useState(defaultList);
     const [activeType, setActiveType] = useState('');
+    const [textAreaValue, setTextAreaValue] = useState('');
 
-    const handleOnSort = (sortType: string) => {
+    const sort = (mComments: any, sortType: string) => {
+        // if (!sortType) return comments;
+        let newComments = cloneDeep(mComments);
         if (sortType === 'hot') {
-            let newComments = cloneDeep(comments);
             newComments = orderBy(newComments, ['like'], ['desc']);
-            setComments(newComments);
-            setActiveType(sortType);
         } else if (sortType === 'newest') {
-            let newComments = cloneDeep(comments);
-            // TODO: check if need to convert datetime for comparing
             newComments = orderBy(newComments, ['ctime'], ['desc']);
-            setComments(newComments);
-            setActiveType(sortType);
         }
+        return newComments;
     }
+
+    // const handleOnSort = (sortType: string) => {
+    //     if (sortType === 'hot') {
+    //         let newComments = cloneDeep(comments);
+    //         newComments = orderBy(newComments, ['like'], ['desc']);
+    //         setComments(newComments);
+    //         setActiveType(sortType);
+    //     } else if (sortType === 'newest') {
+    //         let newComments = cloneDeep(comments);
+    //         // TODO: check if need to convert datetime for comparing
+    //         newComments = orderBy(newComments, ['ctime'], ['desc']);
+    //         setComments(newComments);
+    //         setActiveType(sortType);
+    //     }
+    // }
 
     const handleOnDelete = (rpid: string) => {
         // console.log(rpid);
         let newComments = cloneDeep(comments);
         newComments = newComments.filter(c => c.rpid !== rpid);
         setComments(newComments);
+    }
+
+    const handleOnChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        // console.log(e.target.value);
+        // TODO: should use debounce
+        setTextAreaValue(e.target.value);
+    }
+
+    const handleOnPost = () => {
+        // console.log(textAreaValue);
+        const now = dayjs();//.format('MM-DD HH:mm');
+        console.log(now);
+        const newComment = {
+            rpid: uuidv4(),
+            user,
+            content: textAreaValue,
+            ctime: now,
+            like: 0,
+        };
+        let newComments = cloneDeep(comments);
+        newComments.push(newComment);
+        if (activeType) {
+            newComments = sort(newComments, activeType);
+        }
+        setComments(newComments);
+        // reset form
+        setTextAreaValue('');
     }
 
     return (
@@ -99,7 +142,14 @@ const App = () => {
                         {/* highlight class name： active */}
                         {tabs.map(tab => <span key={tab.type}
                                                className={`nav-item ${activeType === tab.type && 'active'}`}
-                                               onClick={(e) => handleOnSort(tab.type)}>{tab.text}</span>)}
+                            // onClick={(e) => handleOnSort(tab.type)}
+                                               onClick={() => {
+                                                   setActiveType(tab.type);
+                                                   // TODO should use useEffect and refactor sort function (remove sortType parameter...)
+                                                   const newComments = sort(comments, tab.type);
+                                                   setComments(newComments);
+                                               }}
+                        >{tab.text}</span>)}
                     </li>
                 </ul>
             </div>
@@ -118,10 +168,12 @@ const App = () => {
                         <textarea
                             className="reply-box-textarea"
                             placeholder="tell something..."
+                            onChange={handleOnChange}
+                            value={textAreaValue}
                         />
                         {/* post button */}
                         <div className="reply-box-send">
-                            <div className="send-text">post</div>
+                            <div className="send-text" onClick={handleOnPost}>post</div>
                         </div>
                     </div>
                 </div>
@@ -129,7 +181,8 @@ const App = () => {
                 <div className="reply-list">
                     {/* comment item */}
                     {/*<CommentItem />*/}
-                    {comments.map(c => <CommentItem key={c.rpid} item={c} currentUser={user} onDelete={handleOnDelete}/>)}
+                    {comments.map(c => <CommentItem key={c.rpid} item={c} currentUser={user}
+                                                    onDelete={handleOnDelete}/>)}
                 </div>
             </div>
         </div>

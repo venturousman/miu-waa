@@ -1,4 +1,4 @@
-// import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 function CommentItem(props: any) {
     const item = props.item;
@@ -24,7 +24,7 @@ function CommentItem(props: any) {
                     <div className="reply-info">
                         {/* comment created time */}
                         {/*<span className="reply-time">{'2023-11-11'}</span>*/}
-                        <span className="reply-time">{item.ctime}</span>
+                        <span className="reply-time">{dayjs(item.ctime).format('MM-DD HH:mm')}</span>
                         {/* total likes */}
                         <span className="reply-time">Like:{item.like}</span>
                         {currentUser?.uid === item.user?.uid && (
