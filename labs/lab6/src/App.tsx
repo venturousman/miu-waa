@@ -1,15 +1,34 @@
+import {useState} from 'react';
+import {cloneDeep, orderBy} from 'lodash';
+import {v4 as uuidv4} from 'uuid';
+
 import './App.scss'
 import avatar from './images/bozai.png'
+import CommentItem from "./components/CommentItem";
 
+enum SortType {
+    Top = 1,
+    Newest,
+}
+
+// current logged in user info
+const user = {
+    // userid
+    uid: uuidv4(),
+    // profile
+    avatar,
+    // username
+    uname: 'John',
+}
 
 // Comment List data
 const defaultList = [
     {
         // comment id
-        rpid: 3,
+        rpid: uuidv4(),
         // user info
         user: {
-            uid: '13258165',
+            uid: uuidv4(),
             avatar: '',
             uname: 'Jay Zhou',
         },
@@ -20,9 +39,9 @@ const defaultList = [
         like: 88,
     },
     {
-        rpid: 2,
+        rpid: uuidv4(),
         user: {
-            uid: '36080105',
+            uid: uuidv4(),
             avatar: '',
             uname: 'Song Xu',
         },
@@ -31,26 +50,14 @@ const defaultList = [
         like: 88,
     },
     {
-        rpid: 1,
-        user: {
-            uid: '30009257',
-            avatar,
-            uname: 'John',
-        },
+        rpid: uuidv4(),
+        user,
         content: 'I told my computer I needed a break... now it will not stop sending me vacation ads.',
         ctime: '10-19 09:00',
         like: 66,
     },
 ]
-// current logged in user info
-const user = {
-    // userid
-    uid: '30009257',
-    // profile
-    avatar,
-    // username
-    uname: 'John',
-}
+
 
 // Nav Tab
 const tabs = [
@@ -59,6 +66,24 @@ const tabs = [
 ]
 
 const App = () => {
+    const [comments, setComments] = useState(defaultList);
+    const [activeType, setActiveType] = useState<SortType | null>(null);
+
+    const handleOnSort = (sortType: SortType) => {
+        if (sortType === SortType.Top) {
+            let newComments = cloneDeep(comments);
+            newComments = orderBy(newComments, ['like'], ['desc']);
+            setComments(newComments);
+            setActiveType(sortType);
+        } else if (sortType === SortType.Newest) {
+            let newComments = cloneDeep(comments);
+            // TODO: check if need to convert datetime for comparing
+            newComments = orderBy(newComments, ['ctime'], ['desc']);
+            setComments(newComments);
+            setActiveType(sortType);
+        }
+    }
+
     return (
         <div className="app">
             {/* Nav Tab */}
@@ -67,12 +92,18 @@ const App = () => {
                     <li className="nav-title">
                         <span className="nav-title-text">Comments</span>
                         {/* Like */}
-                        <span className="total-reply">{10}</span>
+                        <span className="total-reply">{comments.length}</span>
                     </li>
                     <li className="nav-sort">
                         {/* highlight class name： active */}
-                        <span className='nav-item'>Top</span>
-                        <span className='nav-item'>Newest</span>
+                        <span className={`nav-item ${activeType === SortType.Top && 'active'}`}
+                            // className='nav-item'
+                              onClick={(e) => handleOnSort(SortType.Top)}>Top</span>
+                        <span className={`nav-item ${activeType === SortType.Newest && 'active'}`}
+                            // className={classnames('nav-item', {active: item.type === activeType})}
+                              onClick={(e) => handleOnSort(SortType.Newest)}>Newest</span>
+                        {tabs.map(tab => <span className={`nav-item ${activeType === SortType.Top && 'active'}`}
+                                               onClick={(e) => handleOnSort(SortType.Top)}>{tab.text}</span>)}
                     </li>
                 </ul>
             </div>
@@ -80,7 +111,7 @@ const App = () => {
             <div className="reply-wrap">
                 {/* comments */}
                 <div className="box-normal">
-                    {/* current logged in user profile */}
+                {/* current logged in user profile */}
                     <div className="reply-box-avatar">
                         <div className="bili-avatar">
                             <img className="bili-avatar-img" src={avatar} alt="Profile"/>
@@ -101,37 +132,8 @@ const App = () => {
                 {/* comment list */}
                 <div className="reply-list">
                     {/* comment item */}
-                    <div className="reply-item">
-                        {/* profile */}
-                        <div className="root-reply-avatar">
-                            <div className="bili-avatar">
-                                <img
-                                    className="bili-avatar-img"
-                                    alt=""
-                                />
-                            </div>
-                        </div>
-
-                        <div className="content-wrap">
-                            {/* username */}
-                            <div className="user-info">
-                                <div className="user-name">jack</div>
-                            </div>
-                            {/* comment content */}
-                            <div className="root-reply">
-                                <span className="reply-content">This is reply</span>
-                                <div className="reply-info">
-                                    {/* comment created time */}
-                                    <span className="reply-time">{'2023-11-11'}</span>
-                                    {/* total likes */}
-                                    <span className="reply-time">Like:{100}</span>
-                                    <span className="delete-btn">
-                    Delete
-                  </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {/*<CommentItem />*/}
+                    {comments.map(c => <CommentItem key={c.rpid} item={c}/>)}
                 </div>
             </div>
         </div>
