@@ -6,11 +6,6 @@ import './App.scss'
 import avatar from './images/bozai.png'
 import CommentItem from "./components/CommentItem";
 
-enum SortType {
-    Top = 1,
-    Newest,
-}
-
 // current logged in user info
 const user = {
     // userid
@@ -58,7 +53,6 @@ const defaultList = [
     },
 ]
 
-
 // Nav Tab
 const tabs = [
     {type: 'hot', text: 'Top'},
@@ -67,15 +61,15 @@ const tabs = [
 
 const App = () => {
     const [comments, setComments] = useState(defaultList);
-    const [activeType, setActiveType] = useState<SortType | null>(null);
+    const [activeType, setActiveType] = useState('');
 
-    const handleOnSort = (sortType: SortType) => {
-        if (sortType === SortType.Top) {
+    const handleOnSort = (sortType: string) => {
+        if (sortType === 'hot') {
             let newComments = cloneDeep(comments);
             newComments = orderBy(newComments, ['like'], ['desc']);
             setComments(newComments);
             setActiveType(sortType);
-        } else if (sortType === SortType.Newest) {
+        } else if (sortType === 'newest') {
             let newComments = cloneDeep(comments);
             // TODO: check if need to convert datetime for comparing
             newComments = orderBy(newComments, ['ctime'], ['desc']);
@@ -96,14 +90,9 @@ const App = () => {
                     </li>
                     <li className="nav-sort">
                         {/* highlight class name： active */}
-                        <span className={`nav-item ${activeType === SortType.Top && 'active'}`}
-                            // className='nav-item'
-                              onClick={(e) => handleOnSort(SortType.Top)}>Top</span>
-                        <span className={`nav-item ${activeType === SortType.Newest && 'active'}`}
-                            // className={classnames('nav-item', {active: item.type === activeType})}
-                              onClick={(e) => handleOnSort(SortType.Newest)}>Newest</span>
-                        {tabs.map(tab => <span className={`nav-item ${activeType === SortType.Top && 'active'}`}
-                                               onClick={(e) => handleOnSort(SortType.Top)}>{tab.text}</span>)}
+                        {tabs.map(tab => <span key={tab.type}
+                                               className={`nav-item ${activeType === tab.type && 'active'}`}
+                                               onClick={(e) => handleOnSort(tab.type)}>{tab.text}</span>)}
                     </li>
                 </ul>
             </div>
@@ -111,7 +100,7 @@ const App = () => {
             <div className="reply-wrap">
                 {/* comments */}
                 <div className="box-normal">
-                {/* current logged in user profile */}
+                    {/* current logged in user profile */}
                     <div className="reply-box-avatar">
                         <div className="bili-avatar">
                             <img className="bili-avatar-img" src={avatar} alt="Profile"/>
