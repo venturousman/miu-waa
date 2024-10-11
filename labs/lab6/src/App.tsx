@@ -78,6 +78,13 @@ const App = () => {
         }
     }
 
+    const handleOnDelete = (rpid: string) => {
+        // console.log(rpid);
+        let newComments = cloneDeep(comments);
+        newComments = newComments.filter(c => c.rpid !== rpid);
+        setComments(newComments);
+    }
+
     return (
         <div className="app">
             {/* Nav Tab */}
@@ -122,7 +129,7 @@ const App = () => {
                 <div className="reply-list">
                     {/* comment item */}
                     {/*<CommentItem />*/}
-                    {comments.map(c => <CommentItem key={c.rpid} item={c}/>)}
+                    {comments.map(c => <CommentItem key={c.rpid} item={c} currentUser={user} onDelete={handleOnDelete}/>)}
                 </div>
             </div>
         </div>

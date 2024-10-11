@@ -3,6 +3,7 @@
 function CommentItem(props: any) {
     const item = props.item;
     if (!item) return null;
+    const currentUser = props.currentUser;
     return (
         <div className="reply-item">
             {/* profile */}
@@ -26,7 +27,9 @@ function CommentItem(props: any) {
                         <span className="reply-time">{item.ctime}</span>
                         {/* total likes */}
                         <span className="reply-time">Like:{item.like}</span>
-                        <span className="delete-btn">Delete</span>
+                        {currentUser?.uid === item.user?.uid && (
+                            <span className="delete-btn" onClick={() => props.onDelete(item.rpid)}>Delete</span>
+                        )}
                     </div>
                 </div>
             </div>
