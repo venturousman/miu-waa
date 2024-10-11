@@ -94,6 +94,14 @@ const App = () => {
     //     }
     // }
 
+    const handleOnLike = (rpid: string) => {
+        let newComments = cloneDeep(comments);
+        newComments = newComments.map(c =>
+            c.rpid === rpid ? {...c, like: c.like + 1} : c
+        );
+        setComments(newComments);
+    }
+
     const handleOnDelete = (rpid: string) => {
         // console.log(rpid);
         let newComments = cloneDeep(comments);
@@ -110,7 +118,7 @@ const App = () => {
     const handleOnPost = () => {
         // console.log(textAreaValue);
         const now = dayjs();//.format('MM-DD HH:mm');
-        console.log(now);
+        // console.log(now);
         const newComment = {
             rpid: uuidv4(),
             user,
@@ -173,7 +181,7 @@ const App = () => {
                         />
                         {/* post button */}
                         <div className="reply-box-send">
-                            <div className="send-text" onClick={handleOnPost}>post</div>
+                            <div className="send-text" onClick={handleOnPost}>Post</div>
                         </div>
                     </div>
                 </div>
@@ -182,6 +190,7 @@ const App = () => {
                     {/* comment item */}
                     {/*<CommentItem />*/}
                     {comments.map(c => <CommentItem key={c.rpid} item={c} currentUser={user}
+                                                    onLike={handleOnLike}
                                                     onDelete={handleOnDelete}/>)}
                 </div>
             </div>

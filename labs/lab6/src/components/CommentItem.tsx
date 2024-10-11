@@ -27,6 +27,9 @@ function CommentItem(props: any) {
                         <span className="reply-time">{dayjs(item.ctime).format('MM-DD HH:mm')}</span>
                         {/* total likes */}
                         <span className="reply-time">Like:{item.like}</span>
+                        <span className="reply-like">
+                            <span className="like-icon" onClick={() => props.onLike(item.rpid)}>&#128077;</span>
+                        </span>
                         {currentUser?.uid === item.user?.uid && (
                             <span className="delete-btn" onClick={() => props.onDelete(item.rpid)}>Delete</span>
                         )}
