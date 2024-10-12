@@ -10,6 +10,7 @@ import StatefulCommentBox from "./components/StatefulCommentBox";
 import StatelessCommentBox from "./components/StatelessCommentBox";
 import CommentList from "./components/CommentList";
 import CommentList2 from "./components/CommentList2";
+import {AppContextProvider, useAppContext} from "./AppContext";
 
 // current logged in user info
 const user = {
@@ -69,10 +70,12 @@ const tabs = [
 
 const App = () => {
     const [comments, setComments] = useState<any[]>([]);
-    const [currentUser, setCurrentUser] = useState(null);
+    // const [currentUser, setCurrentUser] = useState(null);
     const [activeType, setActiveType] = useState('');
     const [textAreaValue, setTextAreaValue] = useState('');
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    const {currentUser, setCurrentUser} = useAppContext();
 
     // console.log(defaultList);
     // console.log(JSON.stringify(defaultList));
@@ -103,6 +106,7 @@ const App = () => {
         fetch('http://localhost:3004/users')
             .then((response) => response.json())
             .then((data) => {
+                // console.log(data);
                 if (data && Array.isArray(data) && data.length > 0) {
                     setCurrentUser(data[0]);
                 }
@@ -253,7 +257,7 @@ const App = () => {
                     <StatelessCommentBox
                         onChange={handleOnChange}
                         value={textAreaValue}
-                        currentUser={currentUser}
+                        // currentUser={currentUser}
                         onPost={handleOnPost2}/>
                 </div>
                 {/* comment list */}
@@ -266,7 +270,7 @@ const App = () => {
                 */}
                 <CommentList onLike={handleOnLike}
                              onDelete={handleOnDelete}
-                             currentUser={currentUser}
+                    // currentUser={currentUser}
                              comments={comments}/>
                 {/*
                 <CommentList2 currentUser={null}>
@@ -278,4 +282,13 @@ const App = () => {
     )
 }
 
-export default App
+function AppWrapper() {
+    return (
+        <AppContextProvider>
+            <App/>
+        </AppContextProvider>
+    );
+}
+
+// export default App;
+export default AppWrapper;
