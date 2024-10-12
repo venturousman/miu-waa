@@ -8,6 +8,9 @@ import avatar from './images/bozai.png'
 import CommentItem from "./components/CommentItem";
 import StatefulCommentBox from "./components/StatefulCommentBox";
 import StatelessCommentBox from "./components/StatelessCommentBox";
+import CommentList from "./components/CommentList";
+import CommentList2 from "./components/CommentList2";
+import {AppContextProvider, useAppContext} from "./AppContext";
 
 // current logged in user info
 const user = {
@@ -67,24 +70,33 @@ const tabs = [
 
 const App = () => {
     const [comments, setComments] = useState<any[]>([]);
-    const [currentUser, setCurrentUser] = useState(null);
+    // const [currentUser, setCurrentUser] = useState(null);
     const [activeType, setActiveType] = useState('');
     const [textAreaValue, setTextAreaValue] = useState('');
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    const {currentUser, setCurrentUser} = useAppContext();
 
     // console.log(defaultList);
     // console.log(JSON.stringify(defaultList));
 
     useEffect(() => {
         console.log('inside useEffect to fetch comments');
+
         async function getComments() {
-            const res = await fetch('http://localhost:3004/posts');
-            const data = await res.json();
-            if (data && Array.isArray(data)) {
-                data.forEach((x: any) => x.ctime = dayjs(x.ctime)); // for newest sorting, TODO refactor if use it further
-                setComments(data);
+            try {
+                const res = await fetch('http://localhost:3004/posts');
+                const data = await res.json();
+                if (data && Array.isArray(data)) {
+                    data.forEach((x: any) => x.ctime = dayjs(x.ctime)); // for newest sorting, TODO refactor if use it further
+                    setComments(data);
+                }
+            } catch (e) {
+                console.log("Cannot fetch comments");
+                console.log(e);
             }
         }
+
         getComments();
     }, []); // Empty array means the effect runs once when the component mounts
 
@@ -94,9 +106,14 @@ const App = () => {
         fetch('http://localhost:3004/users')
             .then((response) => response.json())
             .then((data) => {
+                // console.log(data);
                 if (data && Array.isArray(data) && data.length > 0) {
                     setCurrentUser(data[0]);
                 }
+            })
+            .catch(err => {
+                console.log("Cannot fetch users");
+                console.log(err);
             });
     }, []); // Empty array means the effect runs once when the component mounts
 
@@ -240,20 +257,38 @@ const App = () => {
                     <StatelessCommentBox
                         onChange={handleOnChange}
                         value={textAreaValue}
-                        currentUser={currentUser}
+                        // currentUser={currentUser}
                         onPost={handleOnPost2}/>
                 </div>
                 {/* comment list */}
+                {/*
                 <div className="reply-list">
-                    {/* comment item */}
-                    {/*<CommentItem />*/}
                     {comments.map(c => <CommentItem key={c.rpid} item={c} currentUser={currentUser}
                                                     onLike={handleOnLike}
                                                     onDelete={handleOnDelete}/>)}
                 </div>
+                */}
+                <CommentList onLike={handleOnLike}
+                             onDelete={handleOnDelete}
+                    // currentUser={currentUser}
+                             comments={comments}/>
+                {/*
+                <CommentList2 currentUser={null}>
+                    <h1>Hello</h1>
+                </CommentList2>
+                */}
             </div>
         </div>
     )
 }
 
-export default App
+function AppWrapper() {
+    return (
+        <AppContextProvider>
+            <App/>
+        </AppContextProvider>
+    );
+}
+
+// export default App;
+export default AppWrapper;
