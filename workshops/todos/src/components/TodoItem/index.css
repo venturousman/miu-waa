@@ -32,3 +32,11 @@ li:before {
 li:last-child {
     border-bottom: none;
 }
+
+.todo-main li button.btn.btn-danger {
+    display: none;
+}
+
+.todo-main li:hover button.btn.btn-danger {
+    display: block;
+}

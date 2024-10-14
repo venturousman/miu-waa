@@ -1,16 +1,31 @@
-import React from "react";
+import React, {ChangeEvent, MouseEvent} from "react";
 import './index.css';
 
-function Footer() {
+type FooterPropsType = {
+    noFinishedTodos: number;
+    noTotalTodos: number;
+    onDeleteFinishedTodos: () => void;
+    onToggleAllTodos: (checked: boolean) => void;
+    areCompletedAll: boolean;
+}
+
+function Footer(props: FooterPropsType) {
+    const {noFinishedTodos, noTotalTodos, onDeleteFinishedTodos, onToggleAllTodos, areCompletedAll} = props;
+    const handleOnDeleteBtnClick = (e: MouseEvent<HTMLButtonElement>) => {
+        onDeleteFinishedTodos();
+    }
+    const handleOnCheckChange = (e: ChangeEvent<HTMLInputElement>) => {
+        onToggleAllTodos(e.currentTarget.checked);
+    }
     return (
         <div className="todo-footer">
             <label>
-                <input type="checkbox"/>
+                <input type="checkbox" checked={areCompletedAll} onChange={handleOnCheckChange}/>
             </label>
             <span>
-              <span>Finished 0</span> / total 2
+              <span>Finished {noFinishedTodos}</span> / total {noTotalTodos}
             </span>
-            <button className="btn btn-danger">Delete Finished Tasks</button>
+            <button className="btn btn-danger" onClick={handleOnDeleteBtnClick}>Delete Finished Tasks</button>
         </div>
     );
 }
