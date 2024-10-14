@@ -1,0 +1,19 @@
+{
+  "todos": [
+    {
+      "id": "8215f227-7256-4cea-95c8-e6b6cd9b9730",
+      "name": "Create a React App",
+      "completed": true
+    },
+    {
+      "id": "54c0ad90-ddef-4318-9f65-5e9e91e908e1",
+      "name": "Learn about Component Driven Development",
+      "completed": false
+    },
+    {
+      "id": "21656a2f-1873-4d5f-ac20-86f31bf392c3",
+      "name": "Review for Final Exam",
+      "completed": false
+    }
+  ]
+}
