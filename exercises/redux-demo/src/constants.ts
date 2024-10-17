@@ -1,0 +1,2 @@
+export const PIZZA_ORDER = 'PIZZA_ORDER';
+export const PIZZA_RESTOCK = 'PIZZA_RESTOCK';
