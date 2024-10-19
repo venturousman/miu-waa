@@ -21,16 +21,20 @@ type ActionType = {
 
 const reducer = (state = initialState, action: ActionType) => {
     switch (action.type) {
-        case 'SET_ERROR':
-            return {...state, error: action.payload};
-        case 'SET_IS_LOGGED_IN':
-            return {...state, isLoggedIn: action.payload};
+        // case 'SET_IS_LOGGED_IN':
+        //     return {...state, isLoggedIn: action.payload};
         case 'SET_USERNAME':
             return {...state, username: action.payload};
         case 'SET_PASSWORD':
             return {...state, password: action.payload};
+        case 'SET_ERROR':
+            return {...state, error: action.payload};
+        case 'LOGIN':
+            return {...state, isLoggedIn: true};
         case 'RESET':
             return {...state, error: '', username: '', password: ''};
+        case 'LOGOUT':
+            return initialState;
         default:
             return state;
     }
@@ -60,7 +64,7 @@ export default function LoginUseReducer() {
                 }, 1000);
             });
             // setIsLoggedIn(true);
-            dispatch({type: 'SET_IS_LOGGED_IN', payload: true});
+            dispatch({type: 'LOGIN'});
         } catch (error) {
             // setError('Incorrect username or password!');
             // setUsername('');
@@ -77,7 +81,7 @@ export default function LoginUseReducer() {
                         <h1>Welcome {username}!</h1>
                         <button onClick={() => {
                             // setIsLoggedIn(false);
-                            dispatch({type: 'SET_IS_LOGGED_IN', payload: false})
+                            dispatch({type: 'LOGOUT'})
                         }}>Log Out
                         </button>
                     </>
