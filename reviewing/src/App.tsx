@@ -4,6 +4,7 @@ import Courses from "./components/Courses";
 import LoginUseState from "./components/LoginUseState";
 import LoginUseReducer from "./components/LoginUseReducer";
 import UserList from "./components/UserList";
+import MemoHook from "./components/MemoHook";
 
 function App() {
     return (
@@ -11,7 +12,8 @@ function App() {
             {/*<Courses/>*/}
             {/*<LoginUseState/>*/}
             {/*<LoginUseReducer/>*/}
-            <UserList/>
+            {/*<UserList/>*/}
+            <MemoHook/>
         </>
     );
 }
